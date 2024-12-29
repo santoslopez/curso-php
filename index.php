@@ -1,117 +1,90 @@
-<?php
-    $name = "santos";
-    $age = 31 + '1';
+<?php 
 
-    // convierte a booleano
-    $convertir = (bool)50;
+const API_URL = "https://whenisthenextmcufilm.com/api";
 
+# inicializar una nueva sesión de cURL; ch=  curl handle
+$ch = curl_init(API_URL);
 
+// indicar que queremos recibir el resultado de la petición y no mostrarla en pantalla
+curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 
-
-    // dice el tipo de dato
-    echo gettype($name)."\n";
-   
-
-    // definir constantes
-    define('LOGO','carro.png');
-    define('LOGO_2','carro.png');
-
-    // CONSTANTES
-    const hola = "pablo";
+/** ejecutar la petición y guardamos el resultado */
+$result = curl_exec($ch);
 
 
+// una alternativa seria utilizar file_get_contents y tener el resultado mas rapido, si solo se quiere hacer un get de una API
 
-    $concatenar = "hola flor";
-    $concatenar .= ", te adoro.";
-    echo "$concatenar";
+//$result = file_get_contents(API_URL);
 
-    var_dump($name);
-    var_dump($age);
+$data = json_decode($result,true);
 
-    // en produccion, quitar display error
-    // usar php init, en produccion
-    
-    $edad2=45;
-    $edad1=$edad2>40;
+curl_close($ch);
 
-    $edad3=10;
 
-    /*if($edad1){
-        echo "eres mayor";
-    }else{
-        echo "eres joven";
-    }*/
-
-    $outputAge = $edad1
-
-    ? 'eres bueno'
-    : 'eres malo';
-
-    echo "vengadores $outputAge";
 
 ?>
-<!-- sintaxis alternativa if -->
 
 
-<?php if ($edad1) :?>
-<h2>carro lll</h2>
+<head>
+    <title>La próxima película de Marvel</title>
 
-<?php elseif ($edad3) :?>
-    <h2>flor 1</h2>
+    <meta charset="UTF-8"/>
+    <meta name="description" content="La próxima película de Marvel"/>
 
-<?php else :?>
-    <h2>else </h2>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<?php endif; ?>
+<!-- Centered viewport -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.min.css"
+>
+</head>
 
 
-<h1>
-    <?= "<h2>".LOGO."</h2>"?>
-</h1>
+
+
+<main>
+    <!--pre style="font-size:8px;overflow:scroll;height:250px">
+    <?php var_dump($data); ?>
+    </pre-->
+    <section>
+        <img src="<?= $data["poster_url"];?>" width="300" alt="Poster de <?= $data["title"]?>;" style="border-radius:16px"/>
+    </section>
+
+    <hgroup>
+        <h3><?= $data["title"]; ?> se estrena en <?= $data["days_until"];?> días.</h3>
+        <p>Fecha de estreno: <?= $data["release_date"];?></p>
+
+        <p>La siguiente película de Marvel es <?= $data["following_production"]["title"];?></p>
+
+    </hgroup>
+    
+</main>
 
 <style>
+    :root{
+        color-scheme:light dark;
+    }
     body{
-        background: orange;
+        display:grid;
+        place-content: center;
+    }
+
+    section{
+        display:flex;
+        justify-content: center;
+        text-align:center;
+    }
+
+    hgroup{
+        display:flex;
+        flex-direction:column;
+        justify-content: center;
+        text-align:center;
+
+    }
+
+    img{
+        margin: 0 auto;
     }
 </style>
-
-
-
-<?php
-$carrito = 24;
-
-$salidaEdad = match(true){
-    $age <2 => "eres un bebe",
-    $age <10 => "eres mas niño",
-    $age <10 => "eres un adolescente",
-    $age ===18 => "eres mayor de edad",
-    $age <40 => "eres menor de 40",
-
-    $age <60 => "eres un adulto joven",
-
-    default => 
-    "eres adulto"
-};
-
-$bestLanguages = ["php","java",1,2,3,4];
-$bestLanguages[3]="RELOJ";
-$bestLanguages[]="TYPESCRIPT";
-
-
-
-echo "el mejor lenguage es $bestLanguages[3]";
-
-
-// iterar la lista
-
-?>
-<h2><?= $salidaEdad ?></h2>
-
-<ul>
-<!-- key para el indice -->
-    <?php foreach ($bestLanguages as $key => $hola): ?>
-        <li><?= $key . " <- clave " .$hola ?></li>
-    <?php endforeach; ?>
- 
-    
-</ul>
